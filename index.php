@@ -9,7 +9,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
 <script type="text/javascript" src="scripts/fancybox/source/jquery.fancybox.js"></script>
 <link rel="stylesheet" type="text/css" href="scripts/fancybox/source/jquery.fancybox.css" />
-<link rel="stylesheet" type="text/css" href="style.css"  />
+<link rel="stylesheet" type="text/css" href="scripts/style.css"  />
 
 <script>
 $(document).ready(function(){
