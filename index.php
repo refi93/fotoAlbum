@@ -1,3 +1,5 @@
+<?php include 'config.php'; ?>
+
 
 <html>
 
@@ -63,6 +65,8 @@ $("#mulitplefileuploader").uploadFile(settings);
 
 <div id="status"></div>
 
+<a href ='delete_list.php'>delete images</a>
+
 <?php 
 	function random_orientation(){		
 		$orientation = array('&h=194&w=224', '&h=224&w=194' );
@@ -88,8 +92,6 @@ $files = scandir('images/');
 <li ><a href="<?php echo $path . $file; ?>" rel='lightbox' ><img src="scripts/timthumb.php?src=<?php echo $path . $file; ?>&h=194&w=224&zc=1&q=100" /></a></li>
 <?php } }?>
 </ul>
-
-
 </body>
 
 </html>
