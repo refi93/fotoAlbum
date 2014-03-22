@@ -47,7 +47,7 @@ $("#mulitplefileuploader").uploadFile(settings);
 
 <div id="status"></div>
 
-<a href ='delete_list.php?album_id= <?php echo $_GET['album_id']?> '>delete images</a>
+<a href ='delete_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a>
 <br/>
 <a href ='albums.php'>back to albums</a>
 <?php 
@@ -72,7 +72,7 @@ $path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/';
 
 <?php 
     $link = spoj_s_db();
-	$result = mysql_query("SELECT * FROM  `Photo` WHERE album_id = ".$_GET['album_id'], $link);
+	$result = mysql_query("SELECT * FROM  `Photo` WHERE album_id =".$_GET['album_id'], $link);
     while ($row = mysql_fetch_assoc($result)) {
         $file = $row['id'].'.jpg';
 ?>
