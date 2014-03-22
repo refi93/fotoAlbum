@@ -47,7 +47,7 @@ $("#mulitplefileuploader").uploadFile(settings);
 
 <div id="status"></div>
 
-<a href ='delete_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a>
+<a href ='delete_image_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a>
 <br/>
 <a href ='albums.php'>back to albums</a>
 <?php 

@@ -20,7 +20,7 @@ if(isset($_FILES["myfile"]))
     {
     	if(!is_array($_FILES["myfile"]['name'])) /*single file*/
     	{
-    	    // vlozenie fotky do databazy
+    	    /* vlozenie fotky do databazy */
     	    $query = "INSERT INTO `foto_album`.`Photo` (`album_id`) VALUES (".$_GET['album_id'].");";
     	    mysql_query($query, $link);
             $result = mysql_insert_id($link);            
@@ -38,7 +38,6 @@ if(isset($_FILES["myfile"]))
                     $fileName = $_FILES["myfile"]["name"][$i];
                     $ret[$fileName]= $output_dir.$fileName;
                     $mes = "INSERT INTO `foto_album`.`Photo` (`id`, `album_id`) VALUES (LAST_INSERT_ID(), '".$_GET['album_id']."')";
-                    echo "<script type='text/javascript'>alert('".$mes."');</script>";
                     move_uploaded_file($_FILES["myfile"]["tmp_name"][$i],$output_dir.$fileName );
                 }
     	

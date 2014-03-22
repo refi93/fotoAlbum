@@ -7,14 +7,21 @@
 
 
 <script>
-function renameAlbum(album_id){
-    $(document).ready(function(){
-        $("#rename"+album_id).css({
+    function renameAlbum(album_id){
+        $(document).ready(function(){
+            $("#rename"+album_id).css({
+                'display' : 'inline'      
+            });
+        });
+    }
+   function showCreateAlbumForm(){
+        $('#create_album').css({
             'display' : 'inline'      
         });
-    });
-}
-
+        $('#create_album_trigger').css({
+            'display' : 'none'      
+        });
+    }
 </script>
 
 <?php 
@@ -22,9 +29,15 @@ $path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/';
 $path_to_album = 'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images.php'
 ?>
 <h1> Albums </h1>
-
+<a href="delete_album_list.php">delete album</a>
+<a href="#" id="create_album_trigger" onclick="showCreateAlbumForm()">create new album</a>
+<div id="create_album" style="display: none">            
+    <form action="create_album.php" method="post">
+        <input type="text" name="name">
+        <input type="submit" value="create">            
+    </form>
+</div>
 <ul>
-
 
 <?php
     $link = spoj_s_db();
