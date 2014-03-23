@@ -1,4 +1,8 @@
 <?php
+if (session_id() == '') {
+    // session isn't started
+    session_start();
+}
 
 function spoj_s_db() { // spojenie s databazou
     include('config.php');
@@ -43,5 +47,75 @@ $(document).ready(function(){
     
     <?php
 }
+
+
+function delete_image($id){
+    include 'config.php';
+    $path = $images_path.$id.'.jpg';
+    $link = spoj_s_db();
+    $result = mysql_query("DELETE FROM `Photo` WHERE `id`=".$id, $link);
+    if (file_exists($path)) {
+        unlink($path);
+    }
+}
+
+
+function print_register_form(){
+    if (!isset($_POST['username'])) $_POST['username']='';?>
+      <div class="content">
+                <h2>Register</h2>
+ 
+                <form id="register" method="post" action="register.php">
+                    Required fields are in <strong>bold</strong>.<br />
+                    <br />
+ 
+                    <label for="username"><strong>Username</strong></label><input type="text" id="username" name="username" value="<?php echo $_POST['username']; ?>" /> <strong class="error" data-field="username"></strong><br />
+                    <br />
+                    <label for="password"><strong>Password</strong></label><input type="password" id="password" name="password" /> <strong class="error" data-field="password"></strong><br />
+                    <br />
+                    <label for="password2"><strong>Password again</strong></label><input type="password" id="password2" name="password2" /> <strong class="error" data-field="password2"></strong><br />
+                    <br />
+                    <br />
+                    <label><strong>E-mail</strong></label><input type="text" id="email" name="email" value="<?php echo $_POST['email']; ?>" /> <strong class="error" data-field="email"></strong><br />
+                    <br />
+                    <button type="submit">Create account</button>
+                </form>
+      </div>
+    <?php
+}
+
+function check_username($username){
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `username`='".$username."'",$link);
+    $count = mysql_fetch_assoc($result)['count'];
+    if (count > 0) return false;   
+    
+    if(!isset($username)) return false;
+    if ((strlen($username) < 5) || (strlen($username) > 20)) return false;
+    return true;
+}
+
+function check_password($password1, $password2){
+    if (strlen($password1) < 5) return false;
+    if(strcmp($password1,$password2) != 0) return false; 
+    return true;
+}
+
+function check_email($email){
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `email`='".$email."'",$link);
+    $count = mysql_fetch_assoc($result)['count'];
+    if (count > 0) return false;    
+    
+    if(!isset($email)) return false;
+    if ((strlen($email) < 5) || (strlen($email) > 20)) return false;
+    return true;
+}
+
+function isset_everything(){
+    if ((isset($_POST['username'])) && (isset($_POST['email'])) && (isset($_POST['password'])) && (isset($_POST['password2'])) ) return true;
+    return false;
+}
+
 
 ?>

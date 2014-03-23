@@ -1,0 +1,111 @@
+body, input, textarea, button
+{
+    font-family: Arial, Verdana, sans-serif, serif;
+}
+
+body
+{
+    margin: 0;
+    font-size: 13px;
+    background-color: #EEE;
+}
+
+header, footer, nav, .page
+{
+    width: 900px;
+    margin: 0 auto;
+    background-color: #FFF;
+}
+
+.content, footer p
+{
+    padding: 20px;
+    margin: 0;
+}
+
+footer
+{
+    text-align: center;
+    font-size: 70%;
+}
+
+header
+{
+    background-color: #EEE;
+}
+
+nav a
+{
+    float: left;
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #A00;
+}
+
+nav a:hover
+{
+    background-color: #A00;
+    color: #FFF;
+}
+
+form
+{
+    color: #666;
+}
+
+form input[type="text"], form input[type="password"]
+{
+    border: 1px solid #666;
+    padding: 10px 5px;
+    width: 200px;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2) inset;
+}
+
+form textarea
+{
+    border: 1px solid #666;
+    padding: 10px 5px;
+    width: 400px;
+    height: 100px;
+    resize: none;
+    display: inline-block;
+    vertical-align: middle;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2) inset;
+}
+
+form input[type="text"]:focus, 
+form input[type="password"]:focus, 
+form textarea:focus
+{
+    border-color: #090;
+}
+
+
+form label
+{
+    display: inline-block;
+    width: 130px;
+    text-align: left;
+}
+
+form button
+{
+    padding: 10px;
+    font-weight: bold;
+    color: #666;
+    border: 1px solid #666;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+form .error
+{
+    color: red;
+    font-weight: normal;
+}
+
+form .error img
+{
+    vertical-align: middle;
+}
