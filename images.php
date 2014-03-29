@@ -8,6 +8,12 @@ if (!isset($_GET['album_id'])) {
 include 'config.php'; 
 include 'functions.php';
 
+if (!check_login_album($_GET['album_id'])){
+    echo "ACCESS DENIED";
+    return;
+}
+
+
 image_page_header();
 ?>
 
@@ -50,6 +56,8 @@ $("#mulitplefileuploader").uploadFile(settings);
 <a href ='delete_image_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a>
 <br/>
 <a href ='albums.php'>back to albums</a>
+<br/>
+<a href ='share_album.php'>share album</a>
 <?php 
 	function random_orientation(){		
 		$orientation = array('&h=194&w=224', '&h=224&w=194' );

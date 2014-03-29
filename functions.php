@@ -14,6 +14,27 @@ function spoj_s_db() { // spojenie s databazou
 }
 
 
+function check_if_logged_in(){
+    if(!isset($_SESSION['username'])){
+        header( 'Location: login.php');  
+    }
+}
+
+
+function check_login_album($album_id){
+    if(!isset($_SESSION['username'])){
+        header( 'Location: login.php');  
+    }
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT * FROM `Album` JOIN 	`User` ON (User.id = Album.owner_id) WHERE (owner_id = ".$_SESSION['user_id']." AND Album.id = ".$album_id.")",$link);    
+    
+    if(mysql_num_rows($result) == 0){
+        return false;   
+    }
+    return true;
+}
+
+
 function image_page_header(){
     ?>
 <html>
@@ -84,6 +105,7 @@ function print_register_form(){
     <?php
 }
 
+
 function check_username($username){
     $link = spoj_s_db();
     $result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `username`='".$username."'",$link);
@@ -95,11 +117,13 @@ function check_username($username){
     return true;
 }
 
+
 function check_password($password1, $password2){
     if (strlen($password1) < 5) return false;
     if(strcmp($password1,$password2) != 0) return false; 
     return true;
 }
+
 
 function check_email($email){
     $link = spoj_s_db();
@@ -108,13 +132,25 @@ function check_email($email){
     if (count > 0) return false;    
     
     if(!isset($email)) return false;
-    if ((strlen($email) < 5) || (strlen($email) > 20)) return false;
     return true;
 }
+
 
 function isset_everything(){
     if ((isset($_POST['username'])) && (isset($_POST['email'])) && (isset($_POST['password'])) && (isset($_POST['password2'])) ) return true;
     return false;
+}
+
+
+function login($username, $password) {
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT * FROM  `User` WHERE username =  '" . $username . "'AND password =  '" . md5($password) . "'", $link);
+    if (mysql_num_rows($result) > 0){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 
