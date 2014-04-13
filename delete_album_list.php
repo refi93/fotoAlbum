@@ -12,7 +12,7 @@ $path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/';
 <form action="delete_album.php" method="get">
 <?php
     $link = spoj_s_db();
-	$result = mysql_query("SELECT * FROM  `Album`", $link);	
+	$result = mysql_query("SELECT * FROM  `Album` WHERE owner_id=".$_SESSION['user_id'], $link);	
 	
     while ($row = mysql_fetch_assoc($result)) {
         $link_photo = spoj_s_db();

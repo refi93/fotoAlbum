@@ -13,7 +13,7 @@
     
     if(isset($_POST['username']) && ($_POST['username'] != $_SESSION['username'])){
         /* presvedcime sa, ze tento clen do skupiny este nebol pridany */
-        $result = mysql_query("SELECT COUNT(member_id) as count FROM GroupMembers WHERE `group_id`=".$_GET['group_id'], $link);
+        $result = mysql_query("SELECT COUNT(member_id) as count FROM GroupMembers JOIN `User` ON (User.id = GroupMembers.member_id) WHERE `group_id`=".$_GET['group_id']." AND username='".$_POST['username']."'", $link);
 		  /* ak nebol, tak ho tam pridame */        
         if (mysql_fetch_assoc($result)['count'] == 0){
             mysql_query("INSERT INTO `GroupMembers`(`group_id`, `member_id`) SELECT ".$_GET['group_id'].",id FROM `User` WHERE username = '".$_POST['username']."'", $link);    

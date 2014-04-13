@@ -21,17 +21,32 @@ function check_if_logged_in(){
 }
 
 
+/* vrati true, ak prihlaseny pouzivatel ma pravo pristupovat k albumu s id=album_id */
 function check_login_album($album_id){
     if(!isset($_SESSION['username'])){
         header( 'Location: login.php');  
     }
     $link = spoj_s_db();
+    
+    /* overime, ci dany album patri prihlasenemu pouzivatelovi */
     $result = mysql_query("SELECT * FROM `Album` JOIN 	`User` ON (User.id = Album.owner_id) WHERE (owner_id = ".$_SESSION['user_id']." AND Album.id = ".$album_id.")",$link);    
     
-    if(mysql_num_rows($result) == 0){
-        return false;   
+    if(mysql_num_rows($result) == 1){
+        return true;   
     }
-    return true;
+    
+    /* overime, ci dane fotky su zdielane s prihlasenym pouzivatelom, pripadne ci su verejne */  
+    
+    $result = mysql_query("(SELECT DISTINCT id,name FROM  `Album` JOIN `Share` ON (Share.album_id = Album.id) 
+                                                                    JOIN `GroupMembers` ON (GroupMembers.group_id = Share.group_id) 
+                                                                    WHERE member_id=".$_SESSION['user_id']." AND id=".$album_id.")".
+             " UNION
+             (SELECT id,name FROM `Album` WHERE id=".$album_id." AND public=1)", $link);    
+    if(mysql_num_rows($result) > 0){
+        return true;   
+    }   
+    
+    return false;
 }
 
 
@@ -50,7 +65,10 @@ function image_page_header(){
 
 <link rel="stylesheet" type="text/css" href="scripts/fancybox/source/jquery.fancybox.css" />
 <link rel="stylesheet" type="text/css" href="scripts/style.css"  />
-<link href="scripts/uploadfile.css" rel="stylesheet">
+<link href="scripts/uploadfile.css" rel="stylesheet" />
+
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/image_page.css" />
 
 
 <script type="text/javascript" src="scripts/multiupload.js"></script>
@@ -153,5 +171,88 @@ function login($username, $password) {
     }
 }
 
+function get_owner_id($album_id){
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT `owner_id` FROM `Album` WHERE `id`=".$album_id, $link);
+    return mysql_fetch_assoc($result)['owner_id'];
+        
+}
 
+
+function get_album_name($album_id){
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT name FROM `Album` WHERE id = ".$album_id, $link);
+    return mysql_fetch_assoc($result)['name'];
+}
+
+
+/* vrati komenty k albumu s album_id */
+function get_comments($album_id){
+	$link = spoj_s_db();
+	$result = mysql_query("SELECT `user_id`,`time`,`text` FROM `Comment` WHERE `album_id`=".$album_id, $link);
+	return $result;
+}
+
+function get_username($user_id){
+    $link = spoj_s_db();
+    $result = mysql_query("SELECT `username` FROM `User` WHERE `id`=".$user_id, $link);
+    return mysql_fetch_assoc($result)['username'];
+}
+
+
+function bootstrap_header(){
+?>
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="raf" >
+    <link rel="shortcut icon" href="http://getbootstrap.com/assets/ico/favicon.ico">
+
+    <title>fotoAlbum</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/signin.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <style type="text/css">
+  </style></head>
+
+  <body>
+  <?php
+  }
+
+
+function bootstrap_scripts(){
+?>
+   
+         <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+        <iframe style="display: none !important; position: fixed !important; padding: 0px !important; margin: 0px !important; left: 0px !important; top: 0px !important; width: 100% !important; height: 100% !important; background-color: transparent !important; z-index: 2147483647 !important; border: none !important;"></iframe>
+
+<?php
+}
+
+
+function echo_logout(){
+	echo "logged in as ".$_SESSION['username']." <a href='logout.php'>logout</a>";
+    if (!isset($_GET['user_id'])){
+        $_GET['user_id'] = $_SESSION['user_id']; //ak neni nastavene v GET, cie albumy chceme, tak zobrazime albumy prihlaseneho pouzivatela
+    }
+}
 ?>
