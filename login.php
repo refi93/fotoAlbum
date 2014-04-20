@@ -6,7 +6,6 @@ include 'functions.php';
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="raf" >
@@ -47,7 +46,7 @@ if (isset($_SESSION['username'])){
 if (login($_POST['username'], $_POST['password'])){
 	$_SESSION['username'] = $_POST['username'];
 	$link = spoj_s_db();
-	$result = mysql_query("SELECT `id` FROM `User` WHERE `username`='".$_SESSION['username']."'",$link);
+	$result = mysql_query("SELECT `id` FROM `User` WHERE `username`='".mysql_escape_string($_SESSION['username'])."'",$link);
 
     $_SESSION['user_id'] = mysql_fetch_assoc($result)['id'];	
 	
@@ -64,11 +63,12 @@ else{
                     <input type="text" class="form-control" id="username" name="username" placeholder="Username" required=""/> 
                     <input type="password" class="form-control" placeholder="Password" id="password" name="password" required=""> 
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                    Don't have an account? <a href="./register.php">register</a>
                 </form>
             </div>
 <?php
 }
-bootsrap_scripts();
+bootstrap_scripts();
 
 ?>    
         

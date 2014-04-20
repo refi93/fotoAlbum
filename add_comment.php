@@ -5,8 +5,7 @@
 	
 	/* overime, ci je nastaveny album, ktory sa komentuje a ci je prihlaseny pouzivatel ma pravo komentovat dany album */	
 	if(isset($_GET['album_id']) && (check_login_album($_GET['album_id']))){
-		echo "INSERT INTO `Comment`(`user_id`, `album_id`, `text`) VALUES (".$_SESSION['user_id'].",".$_GET['album_id'].",'".$_POST['comment_text']."')";
-		mysql_query("INSERT INTO `Comment`(`user_id`, `album_id`, `text`) VALUES (".$_SESSION['user_id'].",".$_GET['album_id'].",'".$_POST['comment_text']."')", $link);
+		mysql_query("INSERT INTO `Comment`(`user_id`, `album_id`, `text`) VALUES (".$_SESSION['user_id'].",".mysql_escape_string($_GET['album_id']).",'".mysql_escape_string($_POST['comment_text'])."')", $link);
 	}
 ?>
 

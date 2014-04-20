@@ -1,9 +1,18 @@
-
-<h1> Groups </h1>
 <?php
 include 'functions.php';
-echo "logged in as ".$_SESSION['username'].'<br/>';
+image_page_header('Groups');
+?>
+<div id="content">
+<?php
+echo_logout();
+?>
+<h1> Groups </h1>
 
+<ul class="nav nav-pills">
+    <li><a href="./albums.php">back to albums</a></li>
+</ul>
+<br/>
+<?php
 $link = spoj_s_db();
 
 check_if_logged_in();
@@ -26,7 +35,7 @@ $result = mysql_query("SELECT * FROM `Group` WHERE `owner_id`=".$_SESSION['user_
 
 
 while ($row = mysql_fetch_assoc($result)) {
-        echo "<a href = 'group_members.php?group_id=".$row['id']."'>".$row['name']."</a> <a href = 'remove_group.php?group_id=".$row['id']."'>remove</a><br/>";
+        echo "<a href = './group_members.php?group_id=".$row['id']."'>".$row['name']."</a> <a href = './remove_group.php?group_id=".$row['id']."'>remove</a><br/>";
 }
 
 ?>
@@ -35,3 +44,10 @@ while ($row = mysql_fetch_assoc($result)) {
     <input type="text" name="group_name"/>
     <input type="submit" value="Add group"/>
 </form>
+
+<?php
+bootstrap_scripts();
+?>
+</div>
+</body>
+</html>

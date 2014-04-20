@@ -1,4 +1,7 @@
 <?php 
+
+$number_of_displayed_comments = 4;
+
 if (!isset($_GET['album_id'])) {
     header('HTTP/1.0 403 Forbidden');
     die('You are not allowed to access this file.');     
@@ -14,44 +17,66 @@ if (!check_login_album($_GET['album_id'])){
 }
 
 
-image_page_header();
+image_page_header('Images');
 ?>
 
 
 
-<script>
+<script type="text/javascript">
 
 $(document).ready(function()
 {
-
 var settings = {
-	url: "upload.php?album_id=<?php echo $_GET['album_id'] ?>",
-	method: "POST",
-	allowedTypes:"jpg", /* inak "jpg,png,gif" */
-	fileName: "myfile",
-	multiple: true,
-	onSuccess:function(files,data,xhr)
-	{
-		$("#status").html("<font color='green'>Upload successful</font>");
-		location.reload();
-	},
-	onError: function(files,status,errMsg)
-	{		
-		$("#status").html("<font color='red'>Upload Failed</font>");
-	}
+        url: "upload.php?album_id=<?php echo $_GET['album_id']; ?>",
+        method: "POST",
+        allowedTypes:"jpg", /* inak "jpg,png,gif" */
+        fileName: "myfile",
+        multiple: true,
+        onSuccess:function(files,data,xhr)
+        {
+                $("#status").html("<font color='green'>Upload successful<\/font>");
+                location.reload();
+        },
+        onError: function(files,status,errMsg)
+        {               
+                $("#status").html("<font color='red'>Upload Failed<\/font>");
+        }
 }
 $("#mulitplefileuploader").uploadFile(settings);
 });
 </script>
 
+<script type="text/javascript">
+displayedRestOfComments = false;
+function displayRestOfComments()
+{
+    if (displayedRestOfComments){
+        $('.comment_type2').css({
+          'display' : 'none'     
+        });
+        document.getElementById("displayRestOfComments").innerHTML="Display rest of Comments";
+    }
+    else{
+       $('.comment_type2').css({
+         'display' : 'inline'     
+       }); 
+       document.getElementById("displayRestOfComments").innerHTML="Hide rest of Comments";          
+    }  
+    displayedRestOfComments = !displayedRestOfComments;
+       
+}
+</script>
 
+
+</head>
 <body>
 
-<div id="imagePageTop" style="margin-left: 4em;">
+<div class="imagePageTop">
 <?php echo_logout(); ?>
 
 <h1><?php echo get_album_name($_GET['album_id']); ?></h1>
-
+<br>
+<br>
 
 <?php
 /* toto vypisujeme, len ak album patri prihlasenemu pouzivatelovi */
@@ -60,13 +85,13 @@ if (get_owner_id($_GET['album_id'])==$_SESSION['user_id']){
 
 
 <ul class="nav nav-pills">
-    <li><a href ='albums.php'>back to albums</a></li>
-    <li><a href ='share_album.php?album_id=<?php echo $_GET['album_id'];?>'>share album</a></li>
-    <li><a href ='delete_image_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a></li>
+    <li><a href ='./albums.php'>back to albums</a></li>
+    <li><a href ='./share_album.php?album_id=<?php echo $_GET['album_id'];?>'>share album</a></li>
+    <li><a href ='./delete_image_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a></li>
 </ul>
 
-<br/>
-<br/>
+<br>
+<br>
 
 <div id="mulitplefileuploader">Upload</div>
 
@@ -87,12 +112,13 @@ if (get_owner_id($_GET['album_id'])==$_SESSION['user_id']){
 	
 ?>
 
-<br/>
-<br/>
+<br>
+<br>
 
 
 <?php 
-$path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/'; 
+//$real_path =  'http://' . $_SERVER['SERVER_NAME'] . '/~korbas4/fotoAlbum/images/'; 
+$path_to_image = './get_image.php?image_id=';
 //$files = scandir('images/'); 
 ?>
 <div id ="images" style="display: inline-block">
@@ -101,32 +127,52 @@ $path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/';
 
 <?php 
     $link = spoj_s_db();
-	$result = mysql_query("SELECT * FROM  `Photo` WHERE album_id =".$_GET['album_id'], $link);
+	$result = mysql_query("SELECT * FROM  `Photo` WHERE album_id =".mysql_escape_string($_GET['album_id']), $link);
     while ($row = mysql_fetch_assoc($result)) {
         $file = $row['id'].'.jpg';
 ?>
-    <li ><a href="<?php echo $path . $file; ?>" rel='lightbox' ><img src="scripts/timthumb.php?src=<?php echo $path . $file; ?>&h=194&w=224&zc=1&q=100" /></a></li>
+    <li ><a href="<?php echo $path_to_image . $file; ?>" rel='lightbox' ><img src="scripts/timthumb.php?src=<?php echo $TIMTHUMB_PATH.$file; ?>&amp;h=194&amp;w=224&amp;zc=1&amp;q=100" alt="<?php echo $file; ?>" /></a></li>
+	
 <?php
     }
-    /* ak ide o prihlaseneho pouzivatela, dame mu moznost komentovat */
-    
-    
-    $result = get_comments($_GET['album_id']);    
-    while($row = mysql_fetch_assoc($result)){
 ?>
 </ul>
 </div>
-    <p>
+<br>
+
+<div id="comment_section">
+<h2>Comments</h2>
+<br>
+
 <?php
-        echo $row['text']."<br/>".get_username($row['user_id'])."<br/>".date($row['time']);
+    $result = get_comments($_GET['album_id']);  
+    $counter_of_comments = 0;  
+    while($row = mysql_fetch_assoc($result)){
+        if ($counter_of_comments > $number_of_displayed_comments){
+            echo "<div class='comment_type2' style='display: none'>";   
+        }
+        else echo "<div class='comment_type1' style='display: inline'>";
 ?>
-    </p>
-<?php    
+
+<?php
+        echo_comment($row['user_id'], $row['time'], $row['text']);
+        $counter_of_comments++;
+?>
+<hr style='width:30em; position: absolute; left:4em;'>
+<br><br>
+
+<?php
+        echo "</div>";  
     }    
-        
-    
+    if ($counter_of_comments > ($number_of_displayed_comments + 1)){
+        echo "<br>";
+        echo '<a id="displayRestOfComments" href="" onclick="displayRestOfComments(); return false;">Display rest of comments </a>';
+    }    
+    /* ak ide o prihlaseneho pouzivatela, dame mu moznost komentovat */
     if (isset($_SESSION['user_id'])){
 ?>
+<br>
+<br>
     <div id ="comment">
         <form action="add_comment.php?album_id=<?php echo $_GET['album_id']?>" method="post">
 				<textarea id="comment_text" name="comment_text" placeholder="Comment here..." style="width: 30em; height:5em;" ></textarea> <br/>
@@ -136,6 +182,7 @@ $path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/';
 <?php  
     }
 ?>
+</div>
 <?php
 bootstrap_scripts();
 ?>

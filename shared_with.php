@@ -1,21 +1,28 @@
 <?php
     include 'functions.php';
     include 'config.php';    
-    image_page_header(); 
+    image_page_header('Albums shared with you'); 
     check_if_logged_in();   
 ?>
 
 
 <?php 
-$path =  'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images/'; 
-$path_to_album = 'http://' . $_SERVER['SERVER_NAME'] . '/fotoAlbum/images.php';
-echo "logged in as ".$_SESSION['username']." <a href='logout.php'>logout</a>";
+$path =  $server_path.'images/'; 
+$path_to_album = 'http://' . $_SERVER['SERVER_NAME'] . '~korbas4/fotoAlbum/images.php';
+echo "logged in as ".$_SESSION['username']." <a href='./logout.php'>logout</a>";
 if (!isset($_GET['user_id'])){
     $_GET['user_id'] = $_SESSION['user_id']; //ak neni nastavene v GET, cie albumy chceme, tak zobrazime albumy prihlaseneho pouzivatela
 }
 
 ?>
 <h1> Albums shared with you</h1>
+
+<br/>
+<ul class="nav nav-pills">
+    <li><a href="./albums.php">back to albums</a></li>
+</ul>
+<br/>
+<br/>
 
 
 <ul>
@@ -33,7 +40,7 @@ if (!isset($_GET['user_id'])){
     while ($row = mysql_fetch_assoc($result)) {
         $link_photo = spoj_s_db();
         /* vyberieme reprezentativnu fotku pre album */
-        $result_photo = mysql_query("SELECT * FROM  `Photo` WHERE album_id = ".$row['id']." LIMIT 1", $link);
+        $result_photo = mysql_query("SELECT * FROM  `Photo` WHERE album_id = ".mysql_escape_string($row['id'])." LIMIT 1", $link);
         
         $file = mysql_fetch_assoc($result_photo)['id'].'.jpg';
 ?>  
@@ -41,7 +48,7 @@ if (!isset($_GET['user_id'])){
       
             <span style="position: absolute; left: 30px; top: 220px;"><?php echo $row['name']." (".$row['username'].")"; ?> </span>
             
-            <a href="<?php echo $path_to_album .'?album_id='.$row['id']; ?>" rel='lightbox' > 
+            <a href="./images.php<?php echo '?album_id='.$row['id']; ?>" rel='lightbox' > 
                 <img src="scripts/timthumb.php?src=<?php echo $path . $file; ?>&h=194&w=224&zc=1&q=100" /> 
             </a>   
         </li>

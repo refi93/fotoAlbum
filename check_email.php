@@ -19,7 +19,7 @@ $out->message = "";
 
 
 $link = spoj_s_db();
-$result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `email`='".$email."'",$link);
+$result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `email`='".mysql_escape_string($email)."'",$link);
 $count = mysql_fetch_assoc($result)['count'];
 
 

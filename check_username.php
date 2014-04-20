@@ -20,7 +20,7 @@ $out->message = "OK";
 
 
 $link = spoj_s_db();
-$result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `username`='".$username."'",$link);
+$result = mysql_query("SELECT COUNT(`id`) as count FROM `User` WHERE `username`='".mysql_escape_string($username)."'",$link);
 $count = mysql_fetch_assoc($result)['count'];
 
 if ($count > 0)

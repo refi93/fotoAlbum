@@ -1,7 +1,9 @@
-    <!DOCTYPE html>
-    <head>
-        <meta charset="utf-8">
-        <title>Register</title>
+
+               
+<?php
+include 'functions.php';
+bootstrap_header("Register"); 
+?>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" ></script>
         <script type="text/javascript" src="scripts/form_validation.js"></script>
         <script type="text/javascript">
@@ -39,7 +41,7 @@
         
     </head>
 
-    <body>
+    <body style="padding-left: 4em">
             <?php
             include('functions.php');
             include('constants.php');
@@ -47,7 +49,7 @@
             $link = spoj_s_db();
 
             if ((isset_everything()) && (check_username($_POST['username'])) && (check_email($_POST['email'])) && (check_password($_POST['password'], $_POST['password2'])) ) {
-                $result = mysql_query("SELECT * FROM  `User` WHERE  `username` =  '" . $_POST['username'] . "'", $link);
+                $result = mysql_query("SELECT * FROM  `User` WHERE  `username` =  '" . mysql_escape_string($_POST['username']) . "'", $link);
                 
                 if ($_POST['username'] == '') {
                     echo '<div style="color:white; margin: 10px 10px 10px 10px;">Empty username not allowed</div>';
@@ -68,6 +70,7 @@
             }
             else
                 print_register_form();
+            bootstrap_scripts();
             ?>
     </body>
 </html>

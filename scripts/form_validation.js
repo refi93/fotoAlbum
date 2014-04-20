@@ -16,7 +16,7 @@
             var fieldRules = self.rules[fieldName];     // Ziskame zoznam pravidiel pre tento field
             if (fieldRules === null)                    // Ak neexistuju pravidla, mozme oznacit za OK a pokracovat
             {
-                $('.error[data-field="' + fieldName + '"]').html('<img src="images/ok.gif" alt="validation success" />');
+                $('.error[data-field="' + fieldName + '"]').html('<img src="images/ok.png" alt="validation success" />');
                 return true;
             }
             var value = $("#" + fieldName).val();       // Ziskame momentalnu hodnotu komponentu (tuto budeme validovat)
@@ -107,7 +107,7 @@
 
             if (fieldResult === true)                   // Prebehlo vsetko a stale sme OK?
             {
-                $('.error[data-field="' + fieldName + '"]').html('<img src="images/ok.gif" alt="validation success" />');
+                $('.error[data-field="' + fieldName + '"]').html('<img src="images/ok.png" alt="validation success" />');
             }
             return fieldResult;                         // Vratme vysledok validacie
         }
