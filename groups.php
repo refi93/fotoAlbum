@@ -2,6 +2,8 @@
 include 'functions.php';
 image_page_header('Groups');
 ?>
+</head>
+<body>
 <div id="content">
 <?php
 echo_logout();
@@ -23,7 +25,7 @@ if (isset($_POST['group_name']) && isset($_SESSION['user_id'])){
         echo "empty name not allowed";
     $result = mysql_query("SELECT COUNT(id) as count FROM `Group` WHERE `name`='".$_POST['group_name']."'");
     if (mysql_fetch_assoc($result)['count'] == 0){  
-        mysql_query("INSERT INTO `foto_album`.`Group` (`owner_id`, `name`) VALUES ('".$_SESSION['user_id']."', '".$_POST['group_name']."')",$link);
+        mysql_query("INSERT INTO `Group` (`owner_id`, `name`) VALUES ('".$_SESSION['user_id']."', '".$_POST['group_name']."')",$link);
     }
     else{
         echo "group name ".$_POST['group_name']." already exists";    

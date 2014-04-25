@@ -8,7 +8,7 @@ function spoj_s_db() { // spojenie s databazou
     include('config.php');
 
     //$link = mysql_connect('localhost', $php_db_name, $php_db_pwd) or die('Could not connect to mysql server.');
-    $link = mysql_connect('sql3.freesqldatabase.com', $php_db_name, $php_db_pwd) or die('Could not connect to mysql server.');
+    $link = mysql_connect('46.36.35.188', $php_db_name, $php_db_pwd) or die('Could not connect to mysql server.');
     mysql_select_db($db_name, $link) or die('Could not select database.');
     mysql_query("SET CHARACTER SET 'utf8'", $link);
     return $link;
