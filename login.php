@@ -50,7 +50,12 @@ if (login($_POST['username'], $_POST['password'])){
 
     $_SESSION['user_id'] = mysql_fetch_assoc($result)['id'];	
 	
-	header( 'Location: albums.php?user_id='.$_SESSION['user_id']);
+	if ($_SESSION['username'] == 'admin'){
+        header( 'Location: admin.php');   	
+	}
+    else{
+        header( 'Location: albums.php?user_id='.$_SESSION['user_id']);
+    }
 }	
 else{
     if (isset($_POST['username']) || isset($_POST['password'])){

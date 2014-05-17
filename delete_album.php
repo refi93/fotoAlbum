@@ -1,14 +1,14 @@
 <?php
-
+/* vymazanie vybraneho albumu */
 include 'config.php';
 include 'functions.php';
 
 
-foreach ($_GET as $value) {
+foreach ($_POST as $value) {
     $path = $images_path.$value.'.jpg';
     $link = spoj_s_db();
     
-    /* presvedcime sa, ze mazany albym patri prihlasenemu pouzivatelovi */
+    /* presvedcime sa, ze mazany album patri prihlasenemu pouzivatelovi */
     $result = mysql_query("SELECT * FROM `Album` WHERE `id`=".mysql_escape_string($value)." AND `owner_id`=".$_SESSION['user_id'], $link); 
     if (mysql_num_rows($result) != 1){
         echo "ACCESS DENIED";

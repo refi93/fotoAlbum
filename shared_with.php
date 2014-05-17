@@ -42,14 +42,16 @@ if (!isset($_GET['user_id'])){
         /* vyberieme reprezentativnu fotku pre album */
         $result_photo = mysql_query("SELECT * FROM  `Photo` WHERE album_id = ".mysql_escape_string($row['id'])." LIMIT 1", $link);
         
-        $file = mysql_fetch_assoc($result_photo)['id'].'.jpg';
+        
+        $image_id = mysql_fetch_assoc($result_photo)['id'];
+        $file = $image_id.'.jpg';
 ?>  
         <li >
       
             <span style="position: absolute; left: 30px; top: 220px;"><?php echo $row['name']." (".$row['username'].")"; ?> </span>
             
             <a href="./images.php<?php echo '?album_id='.$row['id']; ?>" rel='lightbox' > 
-                <img src="scripts/timthumb.php?src=<?php echo $path . $file; ?>&h=194&w=224&zc=1&q=100" /> 
+                <img src="scripts/timthumb.php?id=<?php echo $image_id; ?>" /> 
             </a>   
         </li>
 <?php

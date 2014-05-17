@@ -1,5 +1,5 @@
 <?php
-
+/* vytvorenie noveho albumu pre prihlaseneho pouzivatela */
 include 'config.php';
 include 'functions.php';
 

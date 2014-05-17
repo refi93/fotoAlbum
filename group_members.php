@@ -1,4 +1,5 @@
-<?php 
+<?php
+    /* vypis clenov danej skupiny */ 
     include 'functions.php';
     image_page_header('Group members');
 ?>
@@ -13,6 +14,10 @@
         });
     });
 </script>
+
+<?php
+    echo_form_submit_script("#form1", "group_members.php?group_id=".$_GET['group_id']);
+?>
 
 </head>
 <body>
@@ -54,13 +59,13 @@
     $result = mysql_query("SELECT username, User.id AS id FROM `GroupMembers` JOIN `User` ON (User.id = GroupMembers.member_id) WHERE GroupMembers.group_id = ".mysql_escape_string($_GET['group_id']),$link);
     
     while ($row = mysql_fetch_assoc($result)) {
-        echo $row['username']." <a href='./remove_user_from_group.php?user_id=".$row['id']."&amp;group_id=".$_GET['group_id']."'>remove</a><br>";
+        echo $row['username']." <a href='./remove_user_from_group.php?user_id=".$row['id']."&amp;group_id=".$_GET['group_id']."' >remove</a><br>";
     }    
 ?>
 
 <br>
 
-<form method="post" action="group_members.php?group_id=<?php echo $_GET['group_id'];?>">
+<form method="post" action="group_members.php?group_id=<?php echo $_GET['group_id'];?>" id="form1">
     <input type="text" name="username" placeholder="username" id="customerAutocomplete" class="ui-autocomplete-input" autocomplete="off" />
     <input type="submit" value="Add member"/>
 </form>

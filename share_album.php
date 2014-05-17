@@ -4,7 +4,10 @@ $link = spoj_s_db();
 
 
 image_page_header('Share album');
+echo_form_submit_script("#form1", "share_album_execute.php?album_id=".$_GET['album_id']);
 ?>
+</head>
+<body>
 <div id="content" style="padding-left: 4em;">
 <h1>Share album</h1>
 
@@ -18,7 +21,7 @@ image_page_header('Share album');
 
 <br/>
 
-<form action="share_album_execute.php?album_id=<?php echo $_GET['album_id']; ?>" method="post">
+<form action="share_album_execute.php?album_id=<?php echo $_GET['album_id']; ?>" method="post" id="form1">
 <?php 
     
     /* chceme, aby skupiny, ktorym je dany album uz zdielany, mali oznaceny checkbox - tento select robi left join, aby skupiny, ktorym album este nebol zdialny mali NULL v stlpci album_id a ostatne tam budu mat cislo albumu */
@@ -28,6 +31,14 @@ image_page_header('Share album');
         if($row['album_id'] == $_GET['album_id']) 
             echo 'checked="checked"';
         echo "/><label for='".$row['id']."'> <a href='./group_members.php?group_id=".$row['id']."'>".$row['name']."</a></label><br/>";
+    }
+    
+    $result = mysql_query("SELECT public FROM Album WHERE id=".mysql_escape_string($_GET['album_id']));
+    if (mysql_fetch_assoc($result)['public'] == 1){
+        echo '<input type="checkbox" name="public" value="public" checked="checked">public<br/>';
+    }
+    else{
+        echo '<input type="checkbox" name="public" value="public" >public<br/>';    
     }
 ?>
 <input type="submit" value="Share to chosen groups">

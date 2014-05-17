@@ -1,5 +1,6 @@
 <?php
 include 'functions.php';
+include 'config.php';
 
 if ((!isset($_GET['album_id'])) || (!check_login_album($_GET['album_id']))) {
     header('HTTP/1.0 403 Forbidden');
@@ -7,8 +8,7 @@ if ((!isset($_GET['album_id'])) || (!check_login_album($_GET['album_id']))) {
 }
 
 /*If directory doesnot exists create it.*/
-include 'functions.php';
-$output_dir = "./images/";
+$output_dir = $IMAGES_LOCATION;
 
 
 $link = spoj_s_db();
@@ -18,6 +18,7 @@ if(isset($_FILES["myfile"]))
 	$ret = array();
 
 	$error =$_FILES["myfile"]["error"];
+	/* vlozime fotku do databazy a zistime, ake dostala id */
 	$query = "INSERT INTO `Photo` (`album_id`) VALUES (".mysql_escape_string($_GET['album_id']).");";
     {
     	if(!is_array($_FILES["myfile"]['name'])) /*single file*/
@@ -28,10 +29,10 @@ if(isset($_FILES["myfile"]))
             
        	 	$fileName = $result.'.jpg'; /*$_FILES["myfile"]["name"];*/
             move_uploaded_file($_FILES["myfile"]["tmp_name"],$output_dir. $fileName /*$_FILES["myfile"]["name"]*/);
-            chmod($output_dir.$fileName, 0777); // nastavime povolenia, aby sa dalo nacitavat  	 	 
+            chmod($output_dir.$fileName, 0777); /* nastavime povolenia, aby sa dalo nacitavat  */	 	 
        	 	$ret[$fileName]= $output_dir.$fileName;
         }
-        else
+        else /* multiple files */
 		{
             $fileCount = count($_FILES["myfile"]['name']);
             for($i=0; $i < $fileCount; $i++)

@@ -1,4 +1,6 @@
 <?php
+/* vrati obrazok s prislusnym id, ale len ak ma na to dany uzivatel pravo */
+
 include 'config.php';
 include 'functions.php';
 

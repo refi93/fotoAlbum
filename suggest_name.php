@@ -1,5 +1,5 @@
 <?php
-
+/* odporucanie mien - pouziva sa pri zdielani albumu skupinam */
 include 'functions.php';
 $link = spoj_s_db();
 

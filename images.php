@@ -1,6 +1,8 @@
 <?php 
-
+/* stranka obsahujuca fotky albumu */
 $number_of_displayed_comments = 4;
+
+
 
 if (!isset($_GET['album_id'])) {
     header('HTTP/1.0 403 Forbidden');
@@ -10,6 +12,9 @@ if (!isset($_GET['album_id'])) {
 
 include 'config.php'; 
 include 'functions.php';
+
+
+grant_privileges_to_admin(get_owner_id($_GET['album_id']));
 
 if (!check_login_album($_GET['album_id'])){
     echo "ACCESS DENIED";
@@ -26,23 +31,24 @@ image_page_header('Images');
 
 $(document).ready(function()
 {
+
 var settings = {
-        url: "upload.php?album_id=<?php echo $_GET['album_id']; ?>",
-        method: "POST",
-        allowedTypes:"jpg", /* inak "jpg,png,gif" */
-        fileName: "myfile",
-        multiple: true,
-        onSuccess:function(files,data,xhr)
-        {
-                $("#status").html("<font color='green'>Upload successful<\/font>");
-                location.reload();
-        },
-        onError: function(files,status,errMsg)
-        {               
-                $("#status").html("<font color='red'>Upload Failed<\/font>");
-        }
+	url: "upload.php?album_id=<?php echo $_GET['album_id']; ?>",
+	method: "POST",
+	allowedTypes:"jpg,png,gif,doc,pdf,zip",
+	fileName: "myfile",
+	multiple: true,
+	onSuccess:function(files,data,xhr)
+	{
+		$("#status").html("<font color='green'>Upload successful</font>");
+	},
+	onError: function(files,status,errMsg)
+	{		
+		$("#status").html("<font color='red'>Upload failed</font>");
+	}
 }
 $("#mulitplefileuploader").uploadFile(settings);
+
 });
 </script>
 
@@ -66,8 +72,10 @@ function displayRestOfComments()
        
 }
 </script>
-
-
+<?php
+    echo_form_submit_script("#comment_form","add_comment.php");
+    echo_link_click_script(".comment","delete_comment.php");
+?>
 </head>
 <body>
 
@@ -88,6 +96,7 @@ if (get_owner_id($_GET['album_id'])==$_SESSION['user_id']){
     <li><a href ='./albums.php'>back to albums</a></li>
     <li><a href ='./share_album.php?album_id=<?php echo $_GET['album_id'];?>'>share album</a></li>
     <li><a href ='./delete_image_list.php?album_id=<?php echo $_GET['album_id']?> '>delete images</a></li>
+    <li><a href ='./edit_image_list.php?album_id=<?php echo $_GET['album_id']?> '>edit image</a></li>
 </ul>
 
 <br>
@@ -131,7 +140,7 @@ $path_to_image = './get_image.php?image_id=';
     while ($row = mysql_fetch_assoc($result)) {
         $file = $row['id'].'.jpg';
 ?>
-    <li ><a href="<?php echo $path_to_image . $file; ?>" rel='lightbox' ><img src="scripts/timthumb.php?src=<?php echo $TIMTHUMB_PATH.$file; ?>&amp;h=194&amp;w=224&amp;zc=1&amp;q=100" alt="<?php echo $file; ?>" /></a></li>
+    <li ><a href="<?php echo $path_to_image . $file; ?>" rel='lightbox' ><img src="timthumb.php?id=<?php echo $row['id'];?>"<?php echo $TIMTHUMB_PATH.$file; ?>&amp;h=194&amp;w=224&amp;zc=1&amp;q=100" alt="<?php echo $file; ?>" /></a></li>
 	
 <?php
     }
@@ -155,7 +164,7 @@ $path_to_image = './get_image.php?image_id=';
 ?>
 
 <?php
-        echo_comment($row['user_id'], $row['time'], $row['text']);
+        echo_comment($row['user_id'], $row['time'], $row['text'],$row['id']);
         $counter_of_comments++;
 ?>
 <hr style='width:30em; position: absolute; left:4em;'>
@@ -174,8 +183,9 @@ $path_to_image = './get_image.php?image_id=';
 <br>
 <br>
     <div id ="comment">
-        <form action="add_comment.php?album_id=<?php echo $_GET['album_id']?>" method="post">
+        <form action="add_comment.php?album_id=<?php echo $_GET['album_id']?>" method="post" id="comment_form">
 				<textarea id="comment_text" name="comment_text" placeholder="Comment here..." style="width: 30em; height:5em;" ></textarea> <br/>
+                <input type="hidden" name="album_id" value="<?php echo $_GET['album_id'];?>"> 				
 				<input type="submit" value="Comment">        
         </form>
     </div>    
@@ -185,6 +195,7 @@ $path_to_image = './get_image.php?image_id=';
 </div>
 <?php
 bootstrap_scripts();
+restore_admin_privileges();
 ?>
 
 </body>

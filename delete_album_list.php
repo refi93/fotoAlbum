@@ -1,9 +1,16 @@
 <?php 
+/* zoznam albumov - uzivatel si tu moze vybrat, ktory album/albumy zmazat */
+
 include 'functions.php';
 include 'config.php';
 $path =  'http://' . $_SERVER['SERVER_NAME'] . '/~korbas4/fotoAlbum/get_image.php?image_id='; 
 image_page_header("Delete album");
+echo_form_submit_script("#form1", "delete_album.php");
+
 ?>
+
+
+
 </head>
 <body>
 <?php echo_logout(); ?>
@@ -16,7 +23,7 @@ image_page_header("Delete album");
 <br/>
 <br/>
 
-<form action="delete_album.php" method="get">
+<form action="delete_alsbum.php" method="POST" id="form1">
 <?php
     $link = spoj_s_db();
 	$result = mysql_query("SELECT * FROM  `Album` WHERE owner_id=".$_SESSION['user_id'], $link);	

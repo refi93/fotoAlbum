@@ -595,6 +595,7 @@
                             pd.done.click(function () {
                                 pd.statusbar.hide("slow");
                                 pd.statusbar.remove();
+                                location.reload();
                             });
                         } else {
                             pd.done.hide();
